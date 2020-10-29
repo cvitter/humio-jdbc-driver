@@ -1,0 +1,41 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.humio</groupId>
+  <artifactId>jdbc.driver</artifactId>
+  <version>0.0.1</version>
+  <name>Humio JDBC Driver</name>
+  <packaging>jar</packaging>
+  <description>JDBC Driver for Humio</description>
+  
+    <licenses>
+  	<license>
+    	<name>The Apache Software License, Version 2.0</name>
+        <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        <distribution>repo</distribution>
+        <comments>A business-friendly OSS license</comments>
+    </license>
+  </licenses>
+  
+  <developers>
+  	<developer>
+  		<name>Craig Vitter</name>
+  		<url>https://github.com/cvitter</url>
+  	</developer>
+  </developers>
+  
+  <dependencies>
+  	<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
+	<dependency>
+    	<groupId>com.fasterxml.jackson.core</groupId>
+    	<artifactId>jackson-core</artifactId>
+    	<version>2.11.3</version>
+	</dependency>
+  </dependencies>
+  
+  <scm>
+  	<url>https://github.com/cvitter/humio.jdbc.driver</url>
+  </scm>
+  <issueManagement>
+  	<url>https://github.com/cvitter/humio.jdbc.driver/issues</url>
+  </issueManagement>
+</project>
