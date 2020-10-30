@@ -20,6 +20,8 @@ import java.net.URI;
 import java.net.URL;
 import java.net.http.*;
 import java.net.http.HttpRequest.BodyPublishers;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class Utility {
@@ -64,6 +66,26 @@ public class Utility {
 		HttpResponse<String> response = queryHumioPost(apiUrl, token, messageBody);
 		return response.body();
 	}
+	
+	
+	/***
+	 * getHumioRepository - extracts Humio repository name from
+	 * SELECT or DELETE statments
+	 * @param query - The SQL query to extract the repository from
+	 * @return repository - the name of the Humio repository
+	 */
+	public static String getHumioRepository(String query) {
+		String repository = "";
+		// Extract from: SELECT SOMETHING FROM repository WHERE...
+		// 			 or: DELETE SOMETHING FROM repository WHERE...
+		Pattern pattern = Pattern.compile("(?i)^.+?(?=from)from\\s+(?<repository>\\S+)");
+		Matcher matcher = pattern.matcher(query);
+		if (matcher.find())
+		{
+		    repository = matcher.group(1);
+		}
+		return repository;
+	} // TESTED
 		
 	
 	// Humio API end points
@@ -120,9 +142,7 @@ public class Utility {
 	 * @throws InterruptedException
 	 */
 	private static HttpResponse<String> queryHumioPost(String url, String token, String body) throws IOException, InterruptedException {
-		
-		
-        HttpRequest request = HttpRequest.newBuilder()
+		HttpRequest request = HttpRequest.newBuilder()
                 .POST(BodyPublishers.ofString(body))
                 .uri(URI.create(url))
                 .setHeader("Authorization", "Bearer " + token)
@@ -130,7 +150,6 @@ public class Utility {
                 .build();
         
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        
         return response;
 	}
 	
