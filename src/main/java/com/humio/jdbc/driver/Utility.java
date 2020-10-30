@@ -17,6 +17,7 @@ package com.humio.jdbc.driver;
 import java.util.Properties;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 import java.net.http.*;
 import java.net.http.HttpRequest.BodyPublishers;
 
@@ -143,29 +144,38 @@ public class Utility {
 	 */
 	// TODO: Make this check more meaningful
 	public static boolean containsHumioProperties(Properties info) {
-		// Make sure info isn't empty or null
-		if (info.isEmpty() != true && info != null) {
-			
-			if (info.getProperty("url").isEmpty() != true && info.getProperty("url").isBlank() != true &&
-				isValidUrl(info.getProperty("url")) && 
-				info.getProperty("token").isEmpty() != true && info.getProperty("token").isBlank() != true) {
-				return true;
-			}
-			
-		}
-		return false;
+		if (!isValidUrl(info.getProperty("url"))) return false;
+		if (!isValidToken(info.getProperty("token"))) return false; 
+		return true;
 	}
 	
 	/***
-	 * Checks to see if the url string appears to be valid
+	 * Checks to see if the url string is valid
 	 * @param url
 	 * @return
 	 */
-	// TODO: Make this check more meaningful
-	public static boolean isValidUrl(String url) {
-		if (url.startsWith("http://") || url.startsWith("https://")) return true;
-		return false;
-	}
-
+	public static boolean isValidUrl(String url) 
+    {
+        try { 
+            new URL(url).toURI(); 
+            return true; 
+        }
+        catch (Exception e) { 
+            return false; 
+        } 
+    } // TESTED
+	
+	
+	/***
+	 * Checks the token (string) value passed for length (appearance) to guess
+	 * whether or not the token should be a valid api token
+	 * @param token
+	 * @return boolean
+	 */
+	public static boolean isValidToken(String token) 
+    {
+		if (token.length() < 40 || token.length() > 49) return false;
+		return true;
+    }
 
 }

@@ -68,4 +68,13 @@ public class UtilityTest {
 		assertEquals(status.status, "OK");
 	}
 
+	@Test
+	public void testValidUrl() {
+		assertTrue(Utility.isValidUrl(humioUrl));
+	}
+	
+	@Test
+	public void testInvalidUrl() {
+		assertFalse(Utility.isValidUrl("randomstringofstuffthatisn'taurl"));
+	}
 }
