@@ -77,4 +77,14 @@ public class UtilityTest {
 	public void testInvalidUrl() {
 		assertFalse(Utility.isValidUrl("randomstringofstuffthatisn'taurl"));
 	}
+	
+	@Test
+	public void testValidToken() {
+		assertTrue(Utility.isValidToken(apiToken));
+	}
+	
+	@Test
+	public void testInalidToken() {
+		assertFalse(Utility.isValidToken("aaaaaaaaaaaaa"));
+	}
 }

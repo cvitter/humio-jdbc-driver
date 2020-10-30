@@ -176,6 +176,6 @@ public class Utility {
     {
 		if (token.length() < 40 || token.length() > 49) return false;
 		return true;
-    }
+    } // TESTED
 
 }
