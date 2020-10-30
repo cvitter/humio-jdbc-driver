@@ -12,6 +12,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.google.gson.*;
+
 public class UtilityTest {
 	
 	private String humioUrl = "";
@@ -29,21 +31,11 @@ public class UtilityTest {
 	public void setUp() throws Exception {
 		// Read in test.properties file
         try (InputStream input = UtilityTest.class.getClassLoader().getResourceAsStream("test.properties")) {
-
             Properties prop = new Properties();
-
-            if (input == null) {
-                System.out.println("Sorry, unable to find config.properties");
-                return;
-            }
-
-            //load a properties file from class path, inside static method
             prop.load(input);
 
-            //get the property value and print it out
             humioUrl = prop.getProperty("humiourl");
             apiToken = prop.getProperty("apitoken");
-
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -55,8 +47,6 @@ public class UtilityTest {
 
 	
 	
-	
-	
 	@Test
 	public void test() {
 		// fail("Not yet implemented");
@@ -64,8 +54,18 @@ public class UtilityTest {
 	
 	@Test
 	public void testHumioStatusQuery() throws IOException, InterruptedException {
+		// Passing an empty query causes the queryHumio method to call the status API
 		String response = com.humio.jdbc.driver.Utility.queryHumio(humioUrl, apiToken, "");
+
+		// Print the response for reference/trouble shooting
 		System.out.print(response);		
+		
+		// Convert the response to JSON
+		Gson g = new Gson(); 
+		HumioStatus status = g.fromJson(response, HumioStatus.class);
+		
+		// Make sure the response from the API = OK
+		assertEquals(status.status, "OK");
 	}
 
 }
