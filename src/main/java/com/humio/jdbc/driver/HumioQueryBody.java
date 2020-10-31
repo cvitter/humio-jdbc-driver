@@ -16,18 +16,18 @@ package com.humio.jdbc.driver;
 
 public class HumioQueryBody {
 	// Reference: https://docs.humio.com/api/using-the-search-api-with-humio/#request
-	public String queryBody;
+	public String queryString;
 	public String start;
 	public String end;
 	public String isLive;
 	public String timeZoneOffsetMinutes;
 	public String arguments;
 	
-	public String getQueryBody() {
-		return queryBody;
+	public String getQueryString() {
+		return queryString;
 	}
-	public void setQueryBody(String queryBody) {
-		this.queryBody = queryBody;
+	public void setQueryString(String queryString) {
+		this.queryString = queryString;
 	}
 	
 	public String getStart() {
