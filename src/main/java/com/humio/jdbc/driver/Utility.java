@@ -22,8 +22,8 @@ import java.net.http.*;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 
 public class Utility {
@@ -40,20 +40,15 @@ public class Utility {
 	 * @throws InterruptedException 
 	 * @throws IOException 
 	 */
-	public static String queryHumio(String url, String token, String query) throws IOException, InterruptedException {
+	public static JsonObject queryHumio(String url, String token, String query) throws IOException, InterruptedException {
 		
 		// Determine the query type
-		String queryType = "UNKNOWN";
-		if (query.isBlank()) {
-			queryType = "STATUS";
-		}
-		else {
-			if (query.startsWith("select") || query.startsWith("SELECT"))queryType = "SELECT";
-			if (query.startsWith("delete") || query.startsWith("DELETE")) queryType = "DELETE";
-		}
+		String queryType = "STATUS";
+		if (query.startsWith("select") || query.startsWith("SELECT")) queryType = "SELECT";
+		if (query.startsWith("delete") || query.startsWith("DELETE")) queryType = "DELETE";
 		
 		// For select and delete events we need to know the repository
-		// And convert the SQL query to Humio's query format
+		// And convert the SQL query to Humio's API query format
 		String repository = "";
 		String messageBody = "";
 		if (queryType == "SELECT" || queryType == "DELETE") {
@@ -66,7 +61,22 @@ public class Utility {
 
 		// 
 		HttpResponse<String> response = queryHumioPost(apiUrl, token, messageBody);
-		return response.body();
+		JsonObject jsonObject = null;
+		if (queryType == "STATUS") {
+			jsonObject = JsonParser.parseString(response.body().toString()).getAsJsonObject();
+		}
+		else if (queryType == "DELETE") {
+			// The endpoint will return HTTP status code 201 (Created) if the delete was scheduled. 
+			// The entity returned is a short string being the internal ID of the delete. You may 
+			// use this if tracking the execution of the delete in some other system.
+			// Need to wrap the response in a jsonObject
+			
+		}
+		// queryType == "SELECT"
+		else {
+		
+		}
+		return jsonObject;
 	}
 	
 	

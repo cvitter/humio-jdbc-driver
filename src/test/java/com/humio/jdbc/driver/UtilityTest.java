@@ -55,45 +55,60 @@ public class UtilityTest {
 	@Test
 	public void testHumioStatusQuery() throws IOException, InterruptedException {
 		// Passing an empty query causes the queryHumio method to call the status API
-		String response = com.humio.jdbc.driver.Utility.queryHumio(humioUrl, apiToken, "");
+		JsonObject response = com.humio.jdbc.driver.Utility.queryHumio(humioUrl, apiToken, "");
 
 		// Print the response for reference/trouble shooting
-		System.out.print(response + "\n");		
-		
-		// Convert the response to JSON
-		Gson g = new Gson(); 
-		HumioStatus status = g.fromJson(response, HumioStatus.class);
-		
+		System.out.print(response.toString() + "\n");
+
 		// Make sure the response from the API = OK
-		assertEquals(status.status, "OK");
+		assertEquals(response.get("status").getAsString(), "OK");
 	}
+	
+	
+	@Test
+	public void testHumioDeleteQuery() throws IOException, InterruptedException {
+		// Passing an empty query causes the queryHumio method to call the status API
+		String deleteQuery = "DELETE FROM Syslog_Err " +
+				"WHERE startTime >  " +
+				"AND endTime < ";
+		
+		JsonObject response = com.humio.jdbc.driver.Utility.queryHumio(humioUrl, apiToken, 
+				deleteQuery);
+
+		// Print the response for reference/trouble shooting
+		System.out.print(response.toString() + "\n");
+
+		// Make sure the response from the API = OK
+		assertEquals(response.get("status").getAsString(), "OK");
+	}
+	
 	
 	@Test
 	public void testHumioSelect() throws IOException, InterruptedException {
 		// Basic select statement test
-		String response = com.humio.jdbc.driver.Utility.queryHumio(humioUrl, apiToken, 
+		JsonObject response = com.humio.jdbc.driver.Utility.queryHumio(humioUrl, apiToken, 
 				"SELECT * FROM Syslogs");
 		
-		// Results returned as ndjson, need to remove new lines and add ","s then
-		// remove the last "," from our string
-		response = response.replaceAll("\n", ",");
-		response = (response.substring(0, response.length() - 1));
-		
-		// Wrap the records in {"resultset":[]} array
-		response = "{\"resultset\":[" + response + "]}";
-		// Print the response for reference/trouble shooting
-		
-		// Test converting to a jsonObject
-		try {
-			// TODO: Find the new correct method to do this...
-			JsonObject jsonObject = new JsonParser().parse(response).getAsJsonObject();
-			assertTrue(true);
-		}
-        catch (Exception e) { 
-        	System.out.print(e + "\n"); 
-        	assertFalse(true);
-        } 
-		System.out.print(response + "\n");
+//		// Results returned as ndjson, need to remove new lines and add ","s then
+//		// remove the last "," from our string
+//		response = response.replaceAll("\n", ",");
+//		response = (response.substring(0, response.length() - 1));
+//		
+//		// Wrap the records in {"resultset":[]} array
+//		response = "{\"resultset\":[" + response + "]}";
+//		// Print the response for reference/trouble shooting
+//		
+//		// Test converting to a jsonObject
+//		try {
+//			// TODO: Find the new correct method to do this...
+//			JsonObject jsonObject = new JsonParser().parse(response).getAsJsonObject();
+//			assertTrue(true);
+//		}
+//        catch (Exception e) { 
+//        	System.out.print(e + "\n"); 
+//        	assertFalse(true);
+//        } 
+//		System.out.print(response + "\n");
 
 	}
 
