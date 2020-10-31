@@ -58,7 +58,7 @@ public class UtilityTest {
 		String response = com.humio.jdbc.driver.Utility.queryHumio(humioUrl, apiToken, "");
 
 		// Print the response for reference/trouble shooting
-		System.out.print(response);		
+		System.out.print(response + "\n");		
 		
 		// Convert the response to JSON
 		Gson g = new Gson(); 
@@ -66,6 +66,35 @@ public class UtilityTest {
 		
 		// Make sure the response from the API = OK
 		assertEquals(status.status, "OK");
+	}
+	
+	@Test
+	public void testHumioSelect() throws IOException, InterruptedException {
+		// Basic select statement test
+		String response = com.humio.jdbc.driver.Utility.queryHumio(humioUrl, apiToken, 
+				"SELECT * FROM Syslogs");
+		
+		// Results returned as ndjson, need to remove new lines and add ","s then
+		// remove the last "," from our string
+		response = response.replaceAll("\n", ",");
+		response = (response.substring(0, response.length() - 1));
+		
+		// Wrap the records in {"resultset":[]} array
+		response = "{\"resultset\":[" + response + "]}";
+		// Print the response for reference/trouble shooting
+		
+		// Test converting to a jsonObject
+		try {
+			// TODO: Find the new correct method to do this...
+			JsonObject jsonObject = new JsonParser().parse(response).getAsJsonObject();
+			assertTrue(true);
+		}
+        catch (Exception e) { 
+        	System.out.print(e + "\n"); 
+        	assertFalse(true);
+        } 
+		System.out.print(response + "\n");
+
 	}
 
 	@Test
@@ -92,7 +121,7 @@ public class UtilityTest {
 	@Test
 	public void testRepositoryExtraction() {
 		String repo = Utility.getHumioRepository("DELETE * FROM craigsrepo WHERE test=1");
-		System.out.print(repo);	
+		System.out.print(repo + "\n");	
 		assertTrue(repo.length() > 0);		
 	}
 }

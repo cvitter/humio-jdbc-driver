@@ -23,6 +23,8 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.gson.Gson;
+
 
 public class Utility {
 	
@@ -46,9 +48,8 @@ public class Utility {
 			queryType = "STATUS";
 		}
 		else {
-			if (query.matches("/select/i")) queryType = "SELECT";
-			if (query.matches("/delete/i")) queryType = "DELETE";
-			if (query.matches("/health/i")) queryType = "HEALTH";
+			if (query.startsWith("select") || query.startsWith("SELECT"))queryType = "SELECT";
+			if (query.startsWith("delete") || query.startsWith("DELETE")) queryType = "DELETE";
 		}
 		
 		// For select and delete events we need to know the repository
@@ -56,15 +57,29 @@ public class Utility {
 		String repository = "";
 		String messageBody = "";
 		if (queryType == "SELECT" || queryType == "DELETE") {
-			//repository = query.e
+			repository = getHumioRepository(query);
+			messageBody = getHumioMessageBody(query);
 		}
 		
 		// Build URL based on query type
 		String apiUrl = buildHumioUrl(url, queryType, repository);
 
-		
+		// 
 		HttpResponse<String> response = queryHumioPost(apiUrl, token, messageBody);
 		return response.body();
+	}
+	
+	
+	/***
+	 * getHumioMessageBody
+	 * @param query
+	 * @return
+	 */
+	public static String getHumioMessageBody(String query) {
+		String messageBody = "{";
+		messageBody += "\"queryString\":\"tail(5)\",\"start\":\"1h\",\"isLive\":false";
+		messageBody += "}";
+		return messageBody;
 	}
 	
 	
@@ -106,10 +121,10 @@ public class Utility {
 		if (!url.endsWith("/")) url += "/";
 		switch(queryType) {
 			case "SELECT":
-				url += humioQueryBase + "/" + repository + "/" + humioSelect;
+				url += humioQueryBase +repository + humioSelect;
 				break;
 			case "DELETE":
-				url += humioQueryBase + "/" + repository + "/" + humioDelete;
+				url += humioQueryBase + repository + humioDelete;
 				break;
 			case "STATUS":
 				url += humioStatus;
