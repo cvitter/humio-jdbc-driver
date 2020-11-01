@@ -1,5 +1,8 @@
 package com.humio.jdbc.driver;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,8 +16,36 @@ public class ParseQuery {
 	public static String getHumioMessageBody(String query) {
 		
 		// SELECT * FROM [repository] WHERE
+		// "queryString"=""
+		// https://docs.humio.com/api/using-the-search-api-with-humio/#time
+		// "start"=""
+		// "end"=""
+		// "isLive":false
 		
 		// DELETE FROM [repository] WHERE startTime endTime
+		// "queryString"=""
+		//https://docs.humio.com/api/using-the-search-api-with-humio/#time
+		// "startTime"=epoch
+		// "endTime"=epoch
+		
+		
+		// Try to extract startTime and endTime values from the query
+		// Must be in format of startTime = 'datestring' and endTime = 'datestring'
+		// 2020-10-31 17:18:00.688
+		Pattern datePattern = Pattern.compile("(?i)^.+?(?=startTime)startTime\\s+\\S+\\s+'(?<startTime>.*)'\\s+AND\\s+endTime\\s+\\S+\\s+'(?<endTime>.*)'");
+		String startStr = "";
+		String endStr = "";
+		Matcher matcher = datePattern.matcher(query);
+		if (matcher.find())
+		{
+			startStr = matcher.group(1);
+			endStr = matcher.group(2);
+		}
+		
+		// Convert dates to epoch
+		startStr = convertDateToEpoch(startStr);
+		endStr = convertDateToEpoch(endStr);
+				
 		
 		String messageBody = "{";
 		messageBody += "\"queryString\":\"tail(5)\",\"start\":\"1h\",\"isLive\":false";
@@ -41,5 +72,27 @@ public class ParseQuery {
 		}
 		return repository;
 	} // TESTED
+	
+	
+
+	/***
+	 * convertDateToEpoch
+	 * @param queryDate
+	 * @return
+	 * @throws ParseException 
+	 */
+	public static String convertDateToEpoch(String queryDate) {
+		// 2020-10-31 17:18:00.688
+		try {
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+			Date date = df.parse(queryDate);
+			long epoch = date.getTime();
+			return Long.toString(epoch);
+		}
+		catch (Exception ex) {
+			return "";
+		}
+
+	}
 	
 }

@@ -2,9 +2,6 @@ package com.humio.jdbc.driver;
 
 import static org.junit.Assert.*;
 
-import java.io.InputStream;
-import java.util.Properties;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -40,6 +37,14 @@ public class ParseQueryTest {
 		String repo = ParseQuery.getHumioRepository("DELETE * FROM reponame WHERE test=1");
 		System.out.print(repo + "\n");	
 		assertTrue(repo.length() > 0);		
+	}
+	
+	
+	@Test
+	public void testGgetHumioMessageBody() {
+		String query = "SELECT * FROM table WHERE startTime > '2020-10-31 17:18:00.688' AND endTime < '2020-10-31 17:18:00.688'";
+		String response = ParseQuery.getHumioMessageBody(query);
+		System.out.print(response + "\n");
 	}
 
 }
