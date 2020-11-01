@@ -51,8 +51,8 @@ public class Utility {
 		String repository = "";
 		String messageBody = "";
 		if (queryType == "SELECT" || queryType == "DELETE") {
-			repository = getHumioRepository(query);
-			messageBody = getHumioMessageBody(query);
+			repository = ParseQuery.getHumioRepository(query);
+			messageBody = ParseQuery.getHumioMessageBody(query);
 		}
 		
 		// Build URL based on query type
@@ -86,41 +86,7 @@ public class Utility {
 		}
 		return jsonObject;
 	}
-	
 
-	
-	
-	/***
-	 * getHumioMessageBody
-	 * @param query
-	 * @return
-	 */
-	public static String getHumioMessageBody(String query) {
-		String messageBody = "{";
-		messageBody += "\"queryString\":\"tail(5)\",\"start\":\"1h\",\"isLive\":false";
-		messageBody += "}";
-		return messageBody;
-	}
-	
-	
-	/***
-	 * getHumioRepository - extracts Humio repository name from
-	 * SELECT or DELETE statments
-	 * @param query - The SQL query to extract the repository from
-	 * @return repository - the name of the Humio repository
-	 */
-	public static String getHumioRepository(String query) {
-		String repository = "";
-		// Extract from: SELECT SOMETHING FROM repository WHERE...
-		// 			 or: DELETE SOMETHING FROM repository WHERE...
-		Pattern pattern = Pattern.compile("(?i)^.+?(?=from)from\\s+(?<repository>\\S+)");
-		Matcher matcher = pattern.matcher(query);
-		if (matcher.find())
-		{
-		    repository = matcher.group(1);
-		}
-		return repository;
-	} // TESTED
 		
 	
 	

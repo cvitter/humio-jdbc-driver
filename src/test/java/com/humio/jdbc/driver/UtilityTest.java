@@ -128,12 +128,5 @@ public class UtilityTest {
 	public void testInalidToken() {
 		assertFalse(Utility.isValidToken("aaaaaaaaaaaaa"));
 	}
-	
-	
-	@Test
-	public void testRepositoryExtraction() {
-		String repo = Utility.getHumioRepository("DELETE * FROM craigsrepo WHERE test=1");
-		System.out.print(repo + "\n");	
-		assertTrue(repo.length() > 0);		
-	}
+
 }
