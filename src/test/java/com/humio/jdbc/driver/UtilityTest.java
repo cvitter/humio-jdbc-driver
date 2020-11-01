@@ -36,7 +36,7 @@ public class UtilityTest {
 
             humioUrl = prop.getProperty("humiourl");
             apiToken = prop.getProperty("apitoken");
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 	}
@@ -53,7 +53,7 @@ public class UtilityTest {
 	}
 	
 	@Test
-	public void testHumioStatusQuery() throws IOException, InterruptedException {
+	public void testHumioStatusQuery() throws Exception {
 		// Passing an empty query causes the queryHumio method to call the status API
 		JsonObject response = com.humio.jdbc.driver.Utility.queryHumio(humioUrl, apiToken, "");
 
@@ -66,7 +66,7 @@ public class UtilityTest {
 	
 	
 	@Test
-	public void testHumioDeleteQuery() throws IOException, InterruptedException {
+	public void testHumioDeleteQuery() throws Exception {
 		// Passing an empty query causes the queryHumio method to call the status API
 		String deleteQuery = "DELETE FROM Syslog_Err " +
 				"WHERE startTime >  " +
@@ -84,32 +84,29 @@ public class UtilityTest {
 	
 	
 	@Test
-	public void testHumioSelect() throws IOException, InterruptedException {
+	public void testHumioSelect() throws Exception {
 		// Basic select statement test
+		String selectQuery = "SELECT * FROM Syslogs";
 		JsonObject response = com.humio.jdbc.driver.Utility.queryHumio(humioUrl, apiToken, 
-				"SELECT * FROM Syslogs");
-		
-//		// Results returned as ndjson, need to remove new lines and add ","s then
-//		// remove the last "," from our string
-//		response = response.replaceAll("\n", ",");
-//		response = (response.substring(0, response.length() - 1));
-//		
-//		// Wrap the records in {"resultset":[]} array
-//		response = "{\"resultset\":[" + response + "]}";
-//		// Print the response for reference/trouble shooting
-//		
-//		// Test converting to a jsonObject
-//		try {
-//			// TODO: Find the new correct method to do this...
-//			JsonObject jsonObject = new JsonParser().parse(response).getAsJsonObject();
-//			assertTrue(true);
-//		}
-//        catch (Exception e) { 
-//        	System.out.print(e + "\n"); 
-//        	assertFalse(true);
-//        } 
-//		System.out.print(response + "\n");
-
+				selectQuery);
+		System.out.print(response + "\n");
+		assertTrue(response.size() > 0);
+	}
+	
+	@Test
+	public void testHumioSelectFail() throws IOException, InterruptedException {
+		// Basic select statement test
+		String selectQuery = "SELECT * FROM NuSuchRepository";
+		try {
+			JsonObject response = com.humio.jdbc.driver.Utility.queryHumio(humioUrl, apiToken, 
+					selectQuery);
+			System.out.print(response + "\n");
+			assertTrue(response.size() > 0);
+		}
+		catch (Exception ex) {
+			String errorMsg = ex.getMessage();
+			assertTrue(errorMsg.equals("could not find view=NuSuchRepository"));
+		}
 	}
 
 	@Test

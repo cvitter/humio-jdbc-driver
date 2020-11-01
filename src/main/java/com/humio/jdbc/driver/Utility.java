@@ -37,10 +37,9 @@ public class Utility {
 	 * @param token - User token used to authenticate to the Humio API
 	 * @param query - Query to run (SELECT, DELETE, HEALTH?)
 	 * @return
-	 * @throws InterruptedException 
-	 * @throws IOException 
+	 * @throws Exception 
 	 */
-	public static JsonObject queryHumio(String url, String token, String query) throws IOException, InterruptedException {
+	public static JsonObject queryHumio(String url, String token, String query) throws Exception {
 		
 		// Determine the query type
 		String queryType = "STATUS";
@@ -61,9 +60,15 @@ public class Utility {
 
 		// 
 		HttpResponse<String> response = queryHumioPost(apiUrl, token, messageBody);
+		
+		// Check response for errors
+		if (response.statusCode() == 404) {
+			throw new Exception(response.body());
+		}
+		
 		JsonObject jsonObject = null;
 		if (queryType == "STATUS") {
-			jsonObject = JsonParser.parseString(response.body().toString()).getAsJsonObject();
+			jsonObject = JsonParser.parseString( response.body().toString() ).getAsJsonObject();
 		}
 		else if (queryType == "DELETE") {
 			// The endpoint will return HTTP status code 201 (Created) if the delete was scheduled. 
@@ -74,10 +79,15 @@ public class Utility {
 		}
 		// queryType == "SELECT"
 		else {
-		
+			// Convert response object to jsonObject
+			jsonObject = JsonParser
+					.parseString( convertNdjsonToJson(response.body().toString()) )
+					.getAsJsonObject();
 		}
 		return jsonObject;
 	}
+	
+
 	
 	
 	/***
@@ -112,6 +122,54 @@ public class Utility {
 		return repository;
 	} // TESTED
 		
+	
+	
+	/***
+	 * httpClient - used in queryHumioPost below
+	 */
+    private static final HttpClient httpClient = HttpClient.newBuilder()
+            .version(HttpClient.Version.HTTP_2)
+            .build();
+	
+	/***
+	 * queryHumioPost - Queries Humio's API via HTTP Post
+	 * @param url - API URL to post to
+	 * @param token - User API token to authenticate the query with
+	 * @param body - Body of the message to post
+	 * @return HttpResponse<String>
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	private static HttpResponse<String> queryHumioPost(String url, String token, String body) throws IOException, InterruptedException {
+		HttpRequest request = HttpRequest.newBuilder()
+                .POST(BodyPublishers.ofString(body))
+                .uri(URI.create(url))
+                .setHeader("Authorization", "Bearer " + token)
+                .setHeader("Content-Type", "application/json")
+                .build();
+        
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        return response;
+	}
+		
+	
+	/***
+	 * convertNdjsonToJson - takes ndjson and wraps the individual events
+	 * in a json document as part of the "resultset" field
+	 * @param ndjson
+	 * @return
+	 */
+	private static String convertNdjsonToJson(String ndjson) {
+		String jsonStr = "";
+		// Replace newlines with ","
+		jsonStr = ndjson.replaceAll("\n", ",");
+		// Remove the final "," from the string
+		jsonStr = (jsonStr.substring(0, jsonStr.length() - 1));
+		// Wrap the records in {"resultset":[]} array
+		jsonStr = "{\"resultset\":[" + jsonStr + "]}";
+		return jsonStr;
+	}
+	
 	
 	// Humio API end points
 	private static String humioStatus = "api/v1/status";
@@ -148,38 +206,7 @@ public class Utility {
 		}
 		return url;
 	}
-	
-	
-	/***
-	 * httpClient - used in queryHumioPost below
-	 */
-    private static final HttpClient httpClient = HttpClient.newBuilder()
-            .version(HttpClient.Version.HTTP_2)
-            .build();
-	
-	/***
-	 * queryHumioPost - Queries Humio's API via HTTP Post
-	 * @param url - API URL to post to
-	 * @param token - User API token to authenticate the query with
-	 * @param body - Body of the message to post
-	 * @return HttpResponse<String>
-	 * @throws IOException
-	 * @throws InterruptedException
-	 */
-	private static HttpResponse<String> queryHumioPost(String url, String token, String body) throws IOException, InterruptedException {
-		HttpRequest request = HttpRequest.newBuilder()
-                .POST(BodyPublishers.ofString(body))
-                .uri(URI.create(url))
-                .setHeader("Authorization", "Bearer " + token)
-                .setHeader("Content-Type", "application/json")
-                .build();
-        
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        return response;
-	}
-	
-	
-	
+			
 	
 	/***
 	 * Checks to see if url and token exist in info
