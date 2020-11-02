@@ -36,12 +36,12 @@ import java.util.concurrent.Executor;
 public class Connection implements java.sql.Connection {
 	
 	
-	private DatabaseMetaData _metaData = null;
-	private Properties _properties = null;
-	
-	private final static boolean IS_READ_ONLY = false;
-	private final static boolean AUTO_COMMIT = true;
-	private final static int TRANSACTION_ISOLATION = java.sql.Connection.TRANSACTION_NONE;
+//	private DatabaseMetaData _metaData = null;
+//	private Properties _properties = null;
+//	
+//	private final static boolean IS_READ_ONLY = false;
+//	private final static boolean AUTO_COMMIT = true;
+//	private final static int TRANSACTION_ISOLATION = java.sql.Connection.TRANSACTION_NONE;
 //	private final static int RESULTSET_HOLDABILITY = ResultSet.HOLD_CURSORS_OVER_COMMIT;
 	
 	

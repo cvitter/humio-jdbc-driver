@@ -20,8 +20,6 @@ import java.net.URI;
 import java.net.URL;
 import java.net.http.*;
 import java.net.http.HttpRequest.BodyPublishers;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 

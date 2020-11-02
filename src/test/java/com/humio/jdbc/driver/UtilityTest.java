@@ -5,19 +5,18 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import com.google.gson.*;
 
 public class UtilityTest {
 	
 	private String humioUrl = "";
 	private String apiToken = "";
+	private String select1 = "";
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -36,6 +35,7 @@ public class UtilityTest {
 
             humioUrl = prop.getProperty("humiourl");
             apiToken = prop.getProperty("apitoken");
+            select1 = prop.getProperty("select1");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -85,11 +85,7 @@ public class UtilityTest {
 	
 	@Test
 	public void testHumioSelect() throws Exception {
-		// Basic select statement test
-		String query = "SELECT * FROM Syslogs WHERE startTime > " +
-				"'2020-10-31 17:18:00.688' AND endTime < '2020-10-31 17:18:00.688'";
-		JsonObject response = com.humio.jdbc.driver.Utility.queryHumio(humioUrl, apiToken, 
-				query);
+		JsonObject response = com.humio.jdbc.driver.Utility.queryHumio(humioUrl, apiToken, select1);
 		System.out.print(response + "\n");
 		assertTrue(response.size() > 0);
 	}

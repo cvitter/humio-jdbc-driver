@@ -2,6 +2,9 @@ package com.humio.jdbc.driver;
 
 import static org.junit.Assert.*;
 
+import java.io.InputStream;
+import java.util.Properties;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -9,6 +12,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class ParseQueryTest {
+	
+	private String select1 = "";
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -20,7 +25,15 @@ public class ParseQueryTest {
 
 	@Before
 	public void setUp() throws Exception {
+		// Read in test.properties file
+        try (InputStream input = UtilityTest.class.getClassLoader().getResourceAsStream("test.properties")) {
+            Properties prop = new Properties();
+            prop.load(input);
 
+            select1 = prop.getProperty("select1");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 	}
 
 	@After
@@ -42,10 +55,7 @@ public class ParseQueryTest {
 	
 	@Test
 	public void testGetHumioMessageBody() {
-		String query = "SELECT * FROM Syslogs WHERE startTime > " +
-				"'2020-10-31 17:18:00.688' AND endTime < '2020-10-31 17:18:00.688'";
-		
-		String response = ParseQuery.getHumioMessageBody(query, "SELECT");
+		String response = ParseQuery.getHumioMessageBody(select1, "SELECT");
 		System.out.print(response + "\n");
 		
 		// TODO: Implement a meaningful test here
