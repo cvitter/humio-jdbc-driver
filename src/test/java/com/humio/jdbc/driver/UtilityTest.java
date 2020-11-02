@@ -17,6 +17,7 @@ public class UtilityTest {
 	private String humioUrl = "";
 	private String apiToken = "";
 	private String select1 = "";
+	private String delete1 = "";
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -36,6 +37,7 @@ public class UtilityTest {
             humioUrl = prop.getProperty("humiourl");
             apiToken = prop.getProperty("apitoken");
             select1 = prop.getProperty("select1");
+            delete1 = prop.getProperty("delete1");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -67,19 +69,14 @@ public class UtilityTest {
 	
 	@Test
 	public void testHumioDeleteQuery() throws Exception {
-		// Passing an empty query causes the queryHumio method to call the status API
-		String deleteQuery = "DELETE FROM Syslog_Err " +
-				"WHERE startTime >  " +
-				"AND endTime < ";
-		
 		JsonObject response = com.humio.jdbc.driver.Utility.queryHumio(humioUrl, apiToken, 
-				deleteQuery);
+				delete1);
 
 		// Print the response for reference/trouble shooting
 		System.out.print(response.toString() + "\n");
-
+		
 		// Make sure the response from the API = OK
-		assertEquals(response.get("status").getAsString(), "OK");
+		assertTrue(response.get("response").getAsString().length() > 0);
 	}
 	
 	

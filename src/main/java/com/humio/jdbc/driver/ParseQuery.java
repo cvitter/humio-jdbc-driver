@@ -63,16 +63,17 @@ public class ParseQuery {
 
 		// Build body 
 		String messageBody = "{";
-		messageBody += "\"queryString\":\"tail(5)\",";
+		if (queryType=="SELECT") messageBody += "\"queryString\":\"tail(5)\",";
+		if (queryType=="DELETE") messageBody += "\"queryString\":\"\",";
 		if (queryType=="SELECT") { 
 			messageBody += "\"start\":" + startStr + ",";
-			if (endStr.length() > 0) messageBody += "\"end\":" + endStr + ",";
+			if (endStr.length() > 0) messageBody += "\"end\":" + endStr + "";
 		}
 		if (queryType=="DELETE") {
 			messageBody += "\"startTime\":" + startStr + ",";
-			if (endStr.length() > 0) messageBody += "\"endTime\":" + endStr + ",";
+			if (endStr.length() > 0) messageBody += "\"endTime\":" + endStr + "";
 		}		
-		messageBody += "\"isLive\":false";
+		if (queryType=="SELECT") messageBody += ",\"isLive\":false";
 		messageBody += "}";
 		
 		return messageBody;

@@ -60,7 +60,7 @@ public class Utility {
 		HttpResponse<String> response = queryHumioPost(apiUrl, token, messageBody);
 		
 		// Check response for errors
-		if (response.statusCode() == 404) {
+		if (response.statusCode() == 404 || response.statusCode() == 400) {
 			throw new Exception(response.body());
 		}
 		
@@ -69,11 +69,10 @@ public class Utility {
 			jsonObject = JsonParser.parseString( response.body().toString() ).getAsJsonObject();
 		}
 		else if (queryType == "DELETE") {
-			// The endpoint will return HTTP status code 201 (Created) if the delete was scheduled. 
-			// The entity returned is a short string being the internal ID of the delete. You may 
-			// use this if tracking the execution of the delete in some other system.
-			// Need to wrap the response in a jsonObject
-			
+			// 
+			String responseVal = "{\"response\":\"" + 
+					response.body().toString() + "\"}";
+			jsonObject = JsonParser.parseString( responseVal ).getAsJsonObject();
 		}
 		// queryType == "SELECT"
 		else {

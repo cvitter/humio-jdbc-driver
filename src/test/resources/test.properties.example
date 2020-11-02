@@ -9,4 +9,4 @@ apitoken=
 # Queries to run tests against
 ################################################################################
 select1=
-
+delete1=
