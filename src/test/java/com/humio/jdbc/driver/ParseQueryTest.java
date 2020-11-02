@@ -29,7 +29,7 @@ public class ParseQueryTest {
 
 	@Test
 	public void test() {
-		//fail("Not yet implemented");
+		assertTrue(true);
 	}
 	
 	@Test
@@ -41,10 +41,14 @@ public class ParseQueryTest {
 	
 	
 	@Test
-	public void testGgetHumioMessageBody() {
-		String query = "SELECT * FROM table WHERE startTime > '2020-10-31 17:18:00.688' AND endTime < '2020-10-31 17:18:00.688'";
-		String response = ParseQuery.getHumioMessageBody(query);
+	public void testGetHumioMessageBody() {
+		String query = "SELECT * FROM Syslogs WHERE startTime > " +
+				"'2020-10-31 17:18:00.688' AND endTime < '2020-10-31 17:18:00.688'";
+		
+		String response = ParseQuery.getHumioMessageBody(query, "SELECT");
 		System.out.print(response + "\n");
+		
+		// TODO: Implement a meaningful test here
 	}
 
 }

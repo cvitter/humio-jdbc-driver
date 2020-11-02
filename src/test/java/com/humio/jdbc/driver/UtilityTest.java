@@ -86,9 +86,10 @@ public class UtilityTest {
 	@Test
 	public void testHumioSelect() throws Exception {
 		// Basic select statement test
-		String selectQuery = "SELECT * FROM Syslogs";
+		String query = "SELECT * FROM Syslogs WHERE startTime > " +
+				"'2020-10-31 17:18:00.688' AND endTime < '2020-10-31 17:18:00.688'";
 		JsonObject response = com.humio.jdbc.driver.Utility.queryHumio(humioUrl, apiToken, 
-				selectQuery);
+				query);
 		System.out.print(response + "\n");
 		assertTrue(response.size() > 0);
 	}

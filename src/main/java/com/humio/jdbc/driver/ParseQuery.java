@@ -9,11 +9,12 @@ import java.util.regex.Pattern;
 public class ParseQuery {
 
 	/***
-	 * getHumioMessageBody
-	 * @param query
-	 * @return
+	 * getHumioMessageBody - accepts a SQL query, returns and properly formatted
+	 * Humio message body to post to the select or delete API
+	 * @param Select query to parse
+	 * @return Message body converted from JSON to a string
 	 */
-	public static String getHumioMessageBody(String query) {
+	public static String getHumioMessageBody(String query, String queryType) {
 		
 		// SELECT * FROM [repository] WHERE
 		// "queryString"=""
@@ -45,11 +46,21 @@ public class ParseQuery {
 		// Convert dates to epoch
 		startStr = convertDateToEpoch(startStr);
 		endStr = convertDateToEpoch(endStr);
-				
-		
+
+		// Build body 
 		String messageBody = "{";
-		messageBody += "\"queryString\":\"tail(5)\",\"start\":\"1h\",\"isLive\":false";
+		messageBody += "\"queryString\":\"tail(5)\",";
+		if (queryType=="SELECT") { 
+			messageBody += "\"start\":" + startStr + ",";
+			if (endStr.length() > 0) messageBody += "\"end\":" + endStr + ",";
+		}
+		if (queryType=="DELETE") {
+			messageBody += "\"startTime\":" + startStr + ",";
+			if (endStr.length() > 0) messageBody += "\"endTime\":" + endStr + ",";
+		}		
+		messageBody += "\"isLive\":false";
 		messageBody += "}";
+		
 		return messageBody;
 	}
 	
@@ -72,13 +83,13 @@ public class ParseQuery {
 		}
 		return repository;
 	} // TESTED
-	
-	
+		
 
 	/***
-	 * convertDateToEpoch
-	 * @param queryDate
-	 * @return
+	 * convertDateToEpoch - Format accepted: 2020-10-31 17:18:00.688
+	 * or yyyy-MM-dd HH:mm:ss.SSS
+	 * @param queryDate ex: 2020-10-31 17:18:00.688
+	 * @return Epoch value as a string
 	 * @throws ParseException 
 	 */
 	public static String convertDateToEpoch(String queryDate) {

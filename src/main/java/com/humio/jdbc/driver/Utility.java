@@ -52,7 +52,7 @@ public class Utility {
 		String messageBody = "";
 		if (queryType == "SELECT" || queryType == "DELETE") {
 			repository = ParseQuery.getHumioRepository(query);
-			messageBody = ParseQuery.getHumioMessageBody(query);
+			messageBody = ParseQuery.getHumioMessageBody(query, queryType);
 		}
 		
 		// Build URL based on query type
