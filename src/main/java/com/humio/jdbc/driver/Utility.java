@@ -177,9 +177,9 @@ public class Utility {
 	 * @return True or False
 	 */
 	// TODO: Make this check more meaningful
-	public static boolean containsHumioProperties(Properties info) {
-		if (!isValidUrl(info.getProperty("url"))) return false;
-		if (!isValidToken(info.getProperty("token"))) return false; 
+	public static boolean validateHumioProperties(Properties info) {
+		if (!isValidUrl(info.getProperty("humiourl"))) return false;
+		if (!isValidToken(info.getProperty("apitoken"))) return false; 
 		return true;
 	}
 	

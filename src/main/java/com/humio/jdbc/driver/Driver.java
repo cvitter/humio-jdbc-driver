@@ -49,7 +49,7 @@ public class Driver implements java.sql.Driver {
      * @throws SQLException
      */
 	public Connection connect(Properties info) throws SQLException {
-		if (Utility.containsHumioProperties(info)) {
+		if (Utility.validateHumioProperties(info)) {
 			try {
 				return new com.humio.jdbc.driver.Connection(info);
 			} catch (UnknownHostException e) {
@@ -101,7 +101,27 @@ public class Driver implements java.sql.Driver {
 
 	@Override
 	public boolean acceptsURL(String url) throws SQLException {
-		return false;
+		return Utility.isValidUrl(url);
 	}
+	
+	public boolean acceptsToken(String token) {
+		return Utility.isValidToken(token);
+	}
+	
+	/***
+	 * Retrieves whether the driver thinks that it can open a connection
+	 * via the properties passed in 
+	 * (For Riak RiakUrl and RiakPort are required properties). 
+	 * Typically drivers will return true if they understand the protocols 
+	 * specified and false if they do not.
+	 * @param info java.util.Properties - list of tag/value pairs
+	 * @return true if the driver understands the properties passed; false if not
+	 * @throws SQLException
+	 */
+	public boolean acceptsProperties(Properties info) throws SQLException {
+		return Utility.validateHumioProperties(info);
+	}
+
+
 	
 }

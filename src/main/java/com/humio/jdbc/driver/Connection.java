@@ -65,11 +65,11 @@ public class Connection implements java.sql.Connection {
 	 * @throws SQLException
 	 */
 	public Connection(String url, Properties info) throws UnknownHostException, SQLException {
-		Utility.containsHumioProperties(info); 
+		Utility.validateHumioProperties(info); 
 	}
 	
 	public Connection(Properties info) throws UnknownHostException, SQLException {
-		Utility.containsHumioProperties(info); 
+		Utility.validateHumioProperties(info); 
 	}
 	
 
