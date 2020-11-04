@@ -49,8 +49,6 @@ public class Driver implements java.sql.Driver {
      * @throws SQLException
      */
 	public Connection connect(Properties info) throws SQLException {
-		// Validate that either the URL is valid or required 
-		// information has been been passed via Properties (URL, Port)		
 		if (Utility.containsHumioProperties(info)) {
 			try {
 				return new com.humio.jdbc.driver.Connection(info);
@@ -78,8 +76,7 @@ public class Driver implements java.sql.Driver {
 	
 
 
-	
-	
+		
 	public int getMajorVersion() {
 		return MAJOR_VERSION;
 	}

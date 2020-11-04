@@ -20,6 +20,7 @@ import java.sql.Blob;
 import java.sql.CallableStatement;
 import java.sql.Clob;
 import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
 import java.sql.NClob;
 import java.sql.PreparedStatement;
 import java.sql.SQLClientInfoException;
@@ -36,14 +37,25 @@ import java.util.concurrent.Executor;
 public class Connection implements java.sql.Connection {
 	
 	
-//	private DatabaseMetaData _metaData = null;
-//	private Properties _properties = null;
-//	
-//	private final static boolean IS_READ_ONLY = false;
-//	private final static boolean AUTO_COMMIT = true;
-//	private final static int TRANSACTION_ISOLATION = java.sql.Connection.TRANSACTION_NONE;
+	private DatabaseMetaData _metaData = null;
+	private Properties _properties = null;
+	
+	private final static boolean IS_READ_ONLY = false;
+	private final static boolean AUTO_COMMIT = true;
+	private final static int TRANSACTION_ISOLATION = java.sql.Connection.TRANSACTION_NONE;
 //	private final static int RESULTSET_HOLDABILITY = ResultSet.HOLD_CURSORS_OVER_COMMIT;
 	
+	
+	/***
+	 * Register the driver with DriverManager
+	 */
+    static {
+        try {
+            DriverManager.registerDriver(new Driver());
+        } 
+        catch (SQLException e) {
+        }
+    }
 	
 	/***
 	 * Connection - instantiates a Humio using the connection information
@@ -52,10 +64,13 @@ public class Connection implements java.sql.Connection {
 	 * @throws UnknownHostException
 	 * @throws SQLException
 	 */
-	public Connection(Properties info) throws UnknownHostException, SQLException {
-		return;
+	public Connection(String url, Properties info) throws UnknownHostException, SQLException {
+		Utility.containsHumioProperties(info); 
 	}
 	
+	public Connection(Properties info) throws UnknownHostException, SQLException {
+		Utility.containsHumioProperties(info); 
+	}
 	
 
 	@Override

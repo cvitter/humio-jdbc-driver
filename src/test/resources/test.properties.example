@@ -8,5 +8,5 @@ apitoken=
 ################################################################################
 # Queries to run tests against
 ################################################################################
-select1=
-delete1=
+select1=SELECT * FROM repo WHERE startTime > '2020-10-31 17:18:00.688' AND endTime < '2020-10-31 17:18:00.688'
+delete1=DELETE FROM repo WHERE startTime > '2020-05-29 3:01:18.655' AND endTime < '2020-05-29 11:01:18.655'
