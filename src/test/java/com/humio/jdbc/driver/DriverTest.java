@@ -33,30 +33,31 @@ public class DriverTest {
 	public void setUp() throws Exception {
 		// Read in test.properties file
         try (InputStream input = UtilityTest.class.getClassLoader().getResourceAsStream("test.properties")) {
-            Properties prop = new Properties();
+        	Properties prop = new Properties();
             prop.load(input);
+            
+            _driver = new Driver();
+    		_conn = (Connection) _driver.connect(null, prop);
 
             humioUrl = prop.getProperty("humiourl");
             apiToken = prop.getProperty("apitoken");
             
-            _driver = new Driver();
-    		_conn = (Connection) _driver.connect(null, prop);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        
 	}
 
 	@After
 	public void tearDown() throws Exception {
-//		_conn.close();
+		_conn.close();
 		_driver = null;
 	}
 
 	
 	@Test 
 	public void testConnection() throws SQLException {
-		assertTrue( _conn != null ); 
-		assertTrue( _conn.getMetaData() != null );
+		assertTrue( _conn != null );
 		assertFalse( _conn.isClosed() );
 	}
 

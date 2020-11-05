@@ -71,7 +71,11 @@ public class Driver implements java.sql.Driver {
      * @throws SQLException
 	 */
 	public Connection connect(String url, Properties info) throws SQLException {
-		return connect(info);
+		try {
+			return new com.humio.jdbc.driver.Connection(url, info);
+		} catch (SQLException | UnknownHostException e) {
+			return null;
+		}
 	}
 	
 
@@ -111,7 +115,7 @@ public class Driver implements java.sql.Driver {
 	/***
 	 * Retrieves whether the driver thinks that it can open a connection
 	 * via the properties passed in 
-	 * (For Riak RiakUrl and RiakPort are required properties). 
+	 * (For Humio humiourl and apitoken are required properties). 
 	 * Typically drivers will return true if they understand the protocols 
 	 * specified and false if they do not.
 	 * @param info java.util.Properties - list of tag/value pairs

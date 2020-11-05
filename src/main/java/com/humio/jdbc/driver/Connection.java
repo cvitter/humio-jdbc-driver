@@ -36,7 +36,7 @@ import java.util.concurrent.Executor;
 
 public class Connection implements java.sql.Connection {
 	
-	
+	private HumioClient _client = null;
 	private DatabaseMetaData _metaData = null;
 	private Properties _properties = null;
 	
@@ -65,12 +65,26 @@ public class Connection implements java.sql.Connection {
 	 * @throws SQLException
 	 */
 	public Connection(String url, Properties info) throws UnknownHostException, SQLException {
-		Utility.validateHumioProperties(info); 
+		_client = new HumioClient();
+		_metaData = new com.humio.jdbc.driver.DatabaseMetaData(info.getProperty("humiourl"));
+		_properties = info;
 	}
 	
 	public Connection(Properties info) throws UnknownHostException, SQLException {
 		Utility.validateHumioProperties(info); 
 	}
+	
+	
+	
+	public void close() throws SQLException {
+		_client = null;
+	}
+
+	public boolean isClosed() throws SQLException {
+		if (_client == null) return true;
+		return false;
+	}
+	
 	
 
 	@Override
@@ -133,17 +147,6 @@ public class Connection implements java.sql.Connection {
 		
 	}
 
-	@Override
-	public void close() throws SQLException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean isClosed() throws SQLException {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
 	public DatabaseMetaData getMetaData() throws SQLException {
