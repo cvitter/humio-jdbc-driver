@@ -65,7 +65,7 @@ public class Connection implements java.sql.Connection {
 	 * @throws SQLException
 	 */
 	public Connection(String url, Properties info) throws UnknownHostException, SQLException {
-		_client = new HumioClient();
+		_client = new HumioClient(info.getProperty("humiourl"), info.getProperty("apitoken"));
 		_metaData = new com.humio.jdbc.driver.DatabaseMetaData(info.getProperty("humiourl"));
 		_properties = info;
 	}

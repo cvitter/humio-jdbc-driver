@@ -17,9 +17,11 @@ public class DriverTest {
 	
 	private static Driver _driver = null;
 	private static Connection _conn = null;
+	private static HumioClient _client = null;
 	
 	private String humioUrl = "";
 	private String apiToken = "";
+	private String select1 = "";
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -38,10 +40,12 @@ public class DriverTest {
             
             _driver = new Driver();
     		_conn = (Connection) _driver.connect(null, prop);
-
+    		
             humioUrl = prop.getProperty("humiourl");
             apiToken = prop.getProperty("apitoken");
+            _client = new HumioClient(humioUrl, apiToken);
             
+            select1 = prop.getProperty("select1");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -50,6 +54,7 @@ public class DriverTest {
 
 	@After
 	public void tearDown() throws Exception {
+		_client = null;
 		_conn.close();
 		_driver = null;
 	}
@@ -81,8 +86,8 @@ public class DriverTest {
 	
 	@Test
 	public void testQuery() throws SQLException {
-		Statement statement = new Statement(null, 0, 0, 0);
-		
+		Statement statement = new Statement(_client, 0, 0, 0);
+		statement.executeQuery(select1);
 		statement.close();
 	}
 

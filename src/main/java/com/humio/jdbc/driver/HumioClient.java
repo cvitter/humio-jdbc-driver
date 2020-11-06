@@ -14,13 +14,32 @@
  */
 package com.humio.jdbc.driver;
 
-import java.net.UnknownHostException;
 
 public class HumioClient {
 	
-    public static HumioClient newClient() throws UnknownHostException
-    {
-        return newClient();
-    }
+	private static String url;
+	
+	public HumioClient(String humioUrl, String apiToken) {
+		setUrl(humioUrl);
+		setToken(apiToken);
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		HumioClient.url = url;
+	}
+
+	private static String token;
+	
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		HumioClient.token = token;
+	}
 
 }
