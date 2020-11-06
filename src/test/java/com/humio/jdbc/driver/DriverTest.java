@@ -78,5 +78,14 @@ public class DriverTest {
 		info.setProperty("apitoken", "AaAaAaAaAaBbBbBbBbBbBbBbBbBbAaAaAaAaAaBbBb");
 		assertTrue( _driver.acceptsProperties(info) );
 	}
+	
+	@Test
+	public void testQuery() throws SQLException {
+		Statement statement = new Statement(null, 0, 0, 0);
+		
+		statement.close();
+	}
+
+	
 
 }

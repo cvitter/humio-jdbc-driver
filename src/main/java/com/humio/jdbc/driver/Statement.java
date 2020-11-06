@@ -20,6 +20,31 @@ import java.sql.SQLException;
 import java.sql.SQLWarning;
 
 public class Statement implements java.sql.Statement {
+	
+	private HumioClient _client;
+	private ResultSet _resultSet;
+	private boolean _isClosed;
+	
+	
+	Statement(HumioClient client, int type, int concurrency, int holdability) {
+		if ( type != 0 || concurrency != 0 || holdability != 0 )
+            throw new UnsupportedOperationException(  );
+		_client = client;
+		_isClosed = false;
+	}
+	
+	
+	public ResultSet executeQuery(String sql) throws SQLException {
+		try {
+			_resultSet = Utility.query(_client, sql);
+			return _resultSet;
+		} 
+		catch (Exception e) {
+			throw new SQLException(e);
+		}
+	}
+	
+	
 
 	@Override
 	public <T> T unwrap(Class<T> iface) throws SQLException {
@@ -33,11 +58,11 @@ public class Statement implements java.sql.Statement {
 		return false;
 	}
 
-	@Override
-	public ResultSet executeQuery(String sql) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	@Override
+//	public ResultSet executeQuery(String sql) throws SQLException {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 	@Override
 	public int executeUpdate(String sql) throws SQLException {

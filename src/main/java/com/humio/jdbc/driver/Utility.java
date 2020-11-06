@@ -20,13 +20,27 @@ import java.net.URI;
 import java.net.URL;
 import java.net.http.*;
 import java.net.http.HttpRequest.BodyPublishers;
+import java.sql.ResultSet;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 
 public class Utility {
 	
-	//static ResultSet _rs;
+	static ResultSet _rs;
+	
+
+	/***
+	 * 
+	 * @param _client
+	 * @param sql
+	 * @return
+	 */
+	public static ResultSet query(HumioClient _client, String sql) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 	/***
@@ -211,5 +225,7 @@ public class Utility {
 		if (token.length() < 40 || token.length() > 49) return false;
 		return true;
     } // TESTED
+
+
 
 }
