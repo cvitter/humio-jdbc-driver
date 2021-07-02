@@ -5,7 +5,7 @@ version.
 
 # License
 
-The Riak TS JDBC Client is Open Source software released under the Apache 2.0 License. Please see the [LICENSE](LICENSE) file for full license details.
+The Humio JDBC Client is Open Source software released under the Apache 2.0 License. Please see the [LICENSE](LICENSE) file for full license details.
 
 # Disclaimer
 
